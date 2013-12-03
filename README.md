@@ -1,6 +1,10 @@
 Two apps are here, to show a difference in how the `flask.helpers.send_from_directory` function works for module apps vs package apps.
 
-### Test 1: Correct behavior with a [module app](module_app.py):
+
+
+
+
+## Test 1: Expected behavior with a [module app](module_app.py):
 
 `$ python module_app.py`
 
@@ -13,7 +17,10 @@ $
 Test 1 sends the file ([`module_sendfrom_dir/sendme_module.txt`](module_sendfrom_dir/sendme_module.txt)) as expected.
 
 
-### Test 2: File not found with a [package app](package_app/__init__.py):
+
+
+
+## Test 2: File not found with a [package app](package_app/__init__.py):
 
 `$ python run_package_app.py`
 
@@ -29,7 +36,17 @@ $
 Test 2 `404`s; can't find the file ([`package_app/package_sendfrom_dir/sendme_package.txt`](package_app/package_sendfrom_dir/sendme_package.txt)).
 
 
-### Test 3: That was weird, try adding the package directory to the `send_from_directory` call.
+
+
+
+## Test 3: Try adding the package directory to the directory argument of `send_from_directory`:
+
+in [`package_app/__init__.py`](package_app/__init__.py):
+```python
+@app.route('/from-up-one')
+def hello_package2():
+    return send_from_directory('package_app/package_sendfrom_dir', 'sendme_package.txt')
+```
 
 `$ python run_package_app.py`
 
@@ -68,3 +85,28 @@ $
 ```
 
 Test 3 raises an `IOError`, because it's trying to open a path with a double `package_app` in the path :(
+
+
+
+
+
+
+## Test 4: Try `os.path.join` instead of `safe_join`:
+
+
+in [`package_app/__init__.py`](package_app/__init__.py):
+```python
+@app.route('/sendfile-nosafejoin')
+def hello_package3():
+    path = os.path.join('package_sendfrom_dir', 'sendme_package.txt')
+    return send_file(path)
+```
+
+`$ python run_package_app.py`
+
+```bash
+$ curl http://localhost:5000/sendfile-nosafejoin
+sup package app
+```
+
+Test 4 works as expected, but the path is **not** safely joined.
