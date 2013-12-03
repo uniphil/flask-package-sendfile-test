@@ -1,6 +1,6 @@
 Two apps are here, to show a difference in how the `flask.helpers.send_from_directory` function works for module apps vs package apps.
 
-### Test 1: Correct behavior with a module app:
+### Test 1: Correct behavior with a [module app](module_app.py):
 
 `$ python module_app.py`
 
@@ -13,7 +13,7 @@ $
 Test 1 sends the file ([`module_sendfrom_dir/sendme_module.txt`](module_sendfrom_dir/sendme_module.txt)) as expected.
 
 
-### Test 2: File not found with a package app:
+### Test 2: File not found with a [package app](package_app/__init__.py):
 
 `$ python run_package_app.py`
 
